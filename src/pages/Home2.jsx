@@ -1,295 +1,159 @@
-import React, { useEffect } from "react";
-import { Clock, Bot, ChartColumn, MessageSquare, Users, Zap } from "lucide-react";
+import React from "react";
+import { Clock, Bot, ChartColumn, MessageSquare, Users, Zap, Check, ChevronRight } from "lucide-react";
 
-
-export default function App() {
-  useEffect(() => {
-    // Bubble generation
-    const bubbleContainer = document.querySelector(".bubbles");
-    const bubbles = 15;
-    for (let i = 0; i < bubbles; i++) {
-      const bubble = document.createElement("div");
-      bubble.classList.add("bubble");
-      const size = `${Math.random() * 80 + 20}px`;
-      const duration = `${Math.random() * 20 + 15}s`;
-      const delay = `${Math.random() * 10}s`;
-      const xStart = `${Math.random() * 100 - 50}vw`;
-      const xEnd = `${Math.random() * 100 - 50}vw`;
-      bubble.style.setProperty("--size", size);
-      bubble.style.setProperty("--duration", duration);
-      bubble.style.animationDelay = delay;
-      bubble.style.setProperty("--x-start", xStart);
-      bubble.style.setProperty("--x-end", xEnd);
-      bubbleContainer.appendChild(bubble);
-    }
-
-    // Scroll animations
-    const observer = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry, index) => {
-          if (entry.isIntersecting) {
-            entry.target.style.transitionDelay = `${entry.target.dataset.delay || index * 100
-              }ms`;
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    document
-      .querySelectorAll(".feature-card, .contact-section > *")
-      .forEach((el, index) => {
-        el.dataset.delay = index * 120;
-        observer.observe(el);
-      });
-  }, []);
-
+export default function Home() {
   return (
-    <div className="relative font-['Inter'] bg-black text-white overflow-x-hidden">
-      {/* Background */}
-      <div className="main-bg"></div>
-      <div className="bubbles"></div>
+    <div className="relative min-h-screen bg-[#fafafa] text-zinc-900 font-sans overflow-x-hidden selection:bg-zinc-950 selection:text-white">
+      {/* Subtle background grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 relative z-10">
-
-        {/* Hero */}
-        <main className="py-24 md:py-32">
-          <div className="text-center max-w-4xl mx-auto hero-section">
-            <div className="relative inline-block" style={{ animationDelay: "100ms" }}>
-              <div className="absolute -inset-2 bg-gradient-to-r from-[var(--accent-primary)] to-indigo-600 rounded-full blur-3xl opacity-20"></div>
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight relative">
-                <span className="text-white">Refine Requirements with</span>
-                <br />
-                <span className="gradient-text">Collaborative AI Agents</span>
-              </h1>
-            </div>
-            <p
-              className="text-[var(--text-muted)] mt-8 text-lg max-w-2xl mx-auto"
-              style={{ animationDelay: "200ms" }}
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Hero Section */}
+        <section className="py-24 md:py-32 flex flex-col items-center text-center max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-800 mb-8">
+            <span className="flex h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
+            Product Studio v2.0
+          </div>
+          
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-zinc-900 leading-tight">
+            Refine your requirements with <br />
+            <span className="text-blue-600">collaborative AI virtual teams</span>
+          </h1>
+          
+          <p className="mt-6 text-lg text-zinc-500 max-w-2xl leading-relaxed">
+            Submit your initial concept and watch virtual specialists debate, refine scope, analyze market positioning, and synthesize a crystal-clear product specification.
+          </p>
+          
+          <div className="mt-10 flex flex-wrap gap-4 justify-center">
+            <a
+              href="/signup"
+              className="inline-flex items-center gap-1 bg-zinc-900 hover:bg-zinc-850 text-white text-sm font-semibold px-5 py-3 rounded-lg shadow-sm transition-colors"
             >
-              Leverage our multi-agent AI platform to collaborate, analyze, and
-              refine your product requirements with unparalleled speed and precision.
-            </p>
-            <div className="mt-10" style={{ animationDelay: "300ms" }}>
-              <a
-                className="py-3 px-5 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-400 text-white font-semibold mb-4 hover:opacity-90 transition"
-                href="/about"
-              >
-                Get Started For Free
-              </a>
-            </div>
+              Get Started for Free
+              <ChevronRight size={16} />
+            </a>
+            <a
+              href="/about"
+              className="inline-flex items-center border border-zinc-300 hover:bg-zinc-100 text-zinc-700 text-sm font-semibold px-5 py-3 rounded-lg transition-colors"
+            >
+              Learn More
+            </a>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-12 border-t border-zinc-200">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900">Built for product teams</h2>
+            <p className="mt-4 text-zinc-500">A structured workspace that aligns virtual specialists for rapid drafting and consensus.</p>
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-28">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <Bot size={32} />,
-                title: "Multi-Agent Collaboration",
-                desc: "Our AI agents work together, simulating expert discussions to cover all angles of your requirements.",
+                icon: <Bot size={24} className="text-zinc-700" />,
+                title: "Structured Discussion",
+                desc: "AI virtual specialists debate requirements across rounds to cover scope, design, tech feasibility, and market fit.",
               },
               {
-                icon: <MessageSquare size={32} />,
-                title: "Real-time Debates",
-                desc: "Generate innovative features and improvements based on initial requirement inputs.",
+                icon: <MessageSquare size={24} className="text-zinc-700" />,
+                title: "Live Refinement",
+                desc: "Watch PMs, Designers, and Tech Architects collaborate in real-time to challenge and improve your inputs.",
               },
               {
-                icon: <ChartColumn size={32} />,
+                icon: <ChartColumn size={24} className="text-zinc-700" />,
                 title: "Aggregated Insights",
-                desc: "AI agents debate and resolve ambiguities, ensuring your requirements are clear and consistent.",
+                desc: "A neutral judge reconciles conflicting suggestions, building structured change logs and actionable specs.",
               },
               {
-                icon: <Clock size={32} />,
-                title: "2-minute Debates",
-                desc: "Track the refinement process with detailed analytics on agent contributions and decision-making.",
+                icon: <Clock size={24} className="text-zinc-700" />,
+                title: "Rapid Iterations",
+                desc: "Iterative debates run in under a minute, delivering structured PRDs and user stories instantly.",
               },
               {
-                icon: <Users size={32} />,
+                icon: <Users size={24} className="text-zinc-700" />,
                 title: "Collaborative Interface",
-                desc: "Tailor the agent roles and workflow to fit your specific product development process.",
+                desc: "Review past specifications, trace revisions, and update documents with live feedback in the dashboard.",
               },
               {
-                icon: <Zap size={32} />,
-                title: "Instant Refinement",
-                desc: "Receive perfectly structured, refined requirements ready for your development team.",
+                icon: <Zap size={24} className="text-zinc-700" />,
+                title: "Figma & Linear Quality",
+                desc: "Receive perfectly structured specifications including milestones, acceptance criteria, and technical designs.",
               },
             ].map((f, i) => (
-              <div key={i} className="feature-card p-8 bg-gray-900 rounded-lg hover:scale-105 hover:shadow-lg shadow-purple-500/30 transition-all ease-in-out duration-180">
-                <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-purple-900/50 mb-6">
-                  <span className="material-icons text-purple-300 text-4xl">{f.icon}</span>
+              <div
+                key={i}
+                className="bg-white border border-zinc-200 rounded-xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:border-zinc-300 transition-colors"
+              >
+                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-zinc-50 border border-zinc-200 mb-6">
+                  {f.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{f.title}</h3>
-                <p className="text-[var(--text-muted)] leading-relaxed">{f.desc}</p>
+                <h3 className="text-base font-semibold text-zinc-900 mb-2">{f.title}</h3>
+                <p className="text-sm text-zinc-500 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* footer */}
-          <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-center px-4">
-            {/* Header */}
-            <h1 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-              Ready to <span className="text-gradient bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">Transform</span> Your Requirements Process?
-            </h1>
-            <p className="text-gray-400 text-center mb-10 max-w-xl">
-              Join thousands of product teams already using AI to refine their requirements faster and more accurately.
+        {/* virtual team section */}
+        <section className="py-24 border-t border-zinc-200">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900">Virtual Specialists</h2>
+            <p className="mt-4 text-zinc-500 max-w-xl mx-auto">
+              Our pre-configured roles analyze requirements from multiple angles.
             </p>
+          </div>
 
-            {/* Features and CTA */}
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-10">
-              {/* Features */}
-              <ul className="flex flex-col gap-4 text-white">
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> 10x faster requirement refinement
+          <div className="grid gap-6 md:grid-cols-5">
+            {[
+              { title: "Project Manager", desc: "Defines scope, milestones, and success metrics." },
+              { title: "Engineering Lead", desc: "Outlines architecture, database schemas, and tech constraints." },
+              { title: "Product Designer", desc: "Shapes user journeys, access flows, and UI wireframes." },
+              { title: "Market Analyst", desc: "Benchmarks competitors, segments target audience, and sets KPIs." },
+              { title: "Synthesized Judge", desc: "Resolves conflicting notes and compiles the final product PRD." },
+            ].map((agent, i) => (
+              <div key={i} className="bg-white border border-zinc-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                <span className="text-xs font-mono text-zinc-400">0{i + 1} // Role</span>
+                <h3 className="text-base font-semibold text-zinc-900 mt-2 mb-2">{agent.title}</h3>
+                <p className="text-xs text-zinc-500 leading-relaxed">{agent.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA section */}
+        <section className="py-20 border-t border-zinc-200">
+          <div className="bg-zinc-900 text-white rounded-2xl p-8 md:p-12 shadow-sm flex flex-col md:flex-row justify-between items-center gap-10">
+            <div className="max-w-xl">
+              <h2 className="text-3xl font-bold tracking-tight">Ready to build your spec?</h2>
+              <p className="mt-4 text-zinc-400">
+                Join product managers and engineering leads already using Refine AI to draft, align, and refine requirements in minutes.
+              </p>
+              <ul className="mt-6 space-y-3">
+                <li className="flex items-center gap-2 text-sm text-zinc-300">
+                  <Check size={16} className="text-blue-500" /> 10x faster requirement refinement
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> 95% accuracy with AI agents
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> Real-time collaborative debates
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> Comprehensive analytics dashboard
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> Export refined requirements
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✔</span> 24/7 AI availability
+                <li className="flex items-center gap-2 text-sm text-zinc-300">
+                  <Check size={16} className="text-blue-500" /> Export final PDF directly to your team
                 </li>
               </ul>
+            </div>
 
-              {/* CTA Box */}
-              <div className="bg-[#1b1b2f] rounded-xl p-8 shadow-lg w-full md:w-96">
-                <h2 className="text-xl font-bold text-white mb-4">Start Free Today</h2>
-                <p className="text-gray-400 mb-6">No credit card required. Get started in minutes.</p>
-                <a href="/signup">
-                  <button className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-400 text-white font-semibold mb-4 hover:opacity-90 transition">
-                    Create Free Account →
-                  </button></a>
-                <div className="flex flex-wrap gap-2 text-gray-400 text-sm">
-                  <span>✨ 14-day free trial</span>
-                  <span>🚀 Setup in 2 minutes</span>
-                  <span>💬 24/7 support</span>
-                </div>
-                <p className="text-gray-500 text-xs mt-4">
-                  By signing up, you agree to our <span className="text-purple-500 underline">Terms of Service</span> and <span className="text-purple-500 underline">Privacy Policy</span>
-                </p>
-              </div>
+            <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-full md:w-80 flex flex-col gap-4">
+              <h3 className="text-lg font-bold">Start Free Today</h3>
+              <p className="text-xs text-zinc-400">No credit card required. Get setup in minutes.</p>
+              <a
+                href="/signup"
+                className="bg-white text-zinc-950 hover:bg-zinc-100 text-center py-2.5 rounded-lg text-sm font-semibold transition-colors shadow-sm animate-pulse"
+              >
+                Create Free Account
+              </a>
+              <span className="text-[10px] text-zinc-500 text-center">
+                Includes 14-day trial & full dashboard access.
+              </span>
             </div>
           </div>
-          <section class="bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-100 py-16">
-            <div class="max-w-6xl mx-auto px-6">
-              <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-blue-300">Product Refiner — The Team</h2>
-                <p class="mt-3 text-slate-400 max-w-2xl mx-auto">
-                  A collaborative team of AI agents that brainstorm, challenge, refine and decide — transforming your raw idea into a clear, actionable product specification.
-                </p>
-              </div>
-
-              <div class="grid gap-6 md:grid-cols-5">
-                <article class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg transform hover:-translate-y-1 transition">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                      <path d="M9 12h6M9 16h6M4 6h16M4 10h16" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div>
-                      <h3 class="text-lg font-semibold">Project Manager</h3>
-                      <p class="text-sm text-slate-400">Keeps the vision aligned, ensures requirements are structured and complete.</p>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg transform hover:-translate-y-1 transition">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                      <path d="M12 2l4 4-4 4-4-4 4-4zM2 12l4-4 4 4-4 4-4-4zM12 22l-4-4 4-4 4 4-4 4zM22 12l-4 4-4-4 4-4 4 4z" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div>
-                      <h3 class="text-lg font-semibold">Developer</h3>
-                      <p class="text-sm text-slate-400">Evaluates technical feasibility, scalability, and implementation details.</p>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg transform hover:-translate-y-1 transition">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                      <path d="M4 6h16v12H4z" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M4 10h16M9 16h6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div>
-                      <h3 class="text-lg font-semibold">Designer</h3>
-                      <p class="text-sm text-slate-400">Focuses on user experience, visuals, and interaction flow.</p>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg transform hover:-translate-y-1 transition">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                      <path d="M3 3h18v4H3zM3 17h18v4H3zM3 10h18v4H3z" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div>
-                      <h3 class="text-lg font-semibold">Market Analyst</h3>
-                      <p class="text-sm text-slate-400">Analyzes market trends, competitors, and user needs for positioning.</p>
-                    </div>
-                  </div>
-                </article>
-
-                <article class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg transform hover:-translate-y-1 transition">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                      <path d="M2 12l10 10 10-10" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M7 12h10M9 5h6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div>
-                      <h3 class="text-lg font-semibold">Judge</h3>
-                      <p class="text-sm text-slate-400">Balances all perspectives, resolves conflicts, and finalizes the refined specification.</p>
-                    </div>
-                  </div>
-                </article>
-              </div>
-
-              <div class="mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                <h4 class="text-xl font-semibold text-blue-200 mb-4">How they work together</h4>
-                <ol class="list-decimal list-inside space-y-3 text-slate-300">
-                  <li><strong>Initiation</strong>: Project Manager captures and structures the idea.</li>
-                  <li><strong>Feasibility</strong>: Developer assesses technical paths and constraints.</li>
-                  <li><strong>Design</strong>: Designer shapes usability and aesthetics.</li>
-                  <li><strong>Analysis</strong>: Market Analyst grounds the idea in real-world demand.</li>
-                  <li><strong>Decision</strong>: Judge consolidates all insights into the final refined product plan.</li>
-                </ol>
-
-                <div class="mt-6 grid gap-4 md:grid-cols-3">
-                  <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <h5 class="text-sm font-semibold text-blue-300">Outcome</h5>
-                    <p class="text-sm text-slate-300 mt-1">A clear, actionable product specification ready for execution.</p>
-                  </div>
-                  <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <h5 class="text-sm font-semibold text-blue-300">Traceability</h5>
-                    <p class="text-sm text-slate-300 mt-1">Every refinement is logged across the team’s iterations.</p>
-                  </div>
-                  <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <h5 class="text-sm font-semibold text-blue-300">Risk-aware</h5>
-                    <p class="text-sm text-slate-300 mt-1">Risks and conflicts are resolved through structured judgment.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-8 flex items-center justify-between gap-4 flex-col md:flex-row">
-                <p class="text-slate-400 max-w-xl">
-                  Want this team applied to your idea? Submit a requirement and watch the Product Refiner run multiple rounds to produce a final plan.
-                </p>
-                <a href="/about" class="inline-block mt-4 md:mt-0 px-5 py-3 rounded-xl bg-blue-400 text-slate-900 font-semibold shadow hover:bg-blue-500 transition">
-                  Start Refinement
-                </a>
-              </div>
-            </div>
-          </section>
-
-        </main>
+        </section>
       </div>
     </div>
   );

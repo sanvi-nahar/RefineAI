@@ -16,30 +16,37 @@ function Header() {
   // console.log(user)
 
   return (
-    <header className="bg-black text-blue-700 sticky top-0 z-50 shadow-md px-10 py-5">
-      <div className="container bg-blue-600/20 rounded-full mx-auto flex justify-between items-center py-4 px-6">
+    <header className="bg-white border-b border-zinc-200 sticky top-0 z-50 px-6 py-3">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
         <a href="/">
-          <div className='flex gap-3 items-center'>
-            <img src={logoImg} alt="logo img" className='h-12 w-12 rounded-full' />
-            <h1 className="text-2xl font-bold text-white cursor-pointer">Refine Ai</h1>
+          <div className="flex gap-2 items-center">
+            <img src={logoImg} alt="logo" className="h-8 w-8 rounded-full border border-zinc-200" />
+            <span className="text-lg font-semibold tracking-tight text-zinc-900">Refine AI</span>
+            <span className="hidden sm:inline-flex items-center rounded-full bg-zinc-100 px-1.5 py-0.5 text-xs font-medium text-zinc-600 ring-1 ring-inset ring-zinc-500/10">SaaS</span>
           </div>
         </a>
+
         {/* Desktop Menu */}
-        <nav className="hidden md:flex space-x-6">
-          <Link to="/" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Home</Link>
-          <Link to="/about" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">About us</Link>
-          <Link to="/agents" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Agents</Link>
-          <Link to="/analytics" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Analytics</Link>
+        <nav className="hidden md:flex items-center space-x-6">
+          <Link to="/" className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Home</Link>
+          <Link to="/about" className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">About Us</Link>
+          <Link to="/agents" className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Virtual Team</Link>
+          <Link to="/analytics" className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Analytics</Link>
+          
+          <div className="h-4 w-px bg-zinc-200" />
+
           {user ? (
-            <Link to="/dashboard"><img src={user.picture} alt="user profile" className='h-10 rounded-full' /></Link>
+            <Link to="/dashboard" className="flex items-center">
+              <img src={user.picture} alt="user profile" className="h-8 w-8 rounded-full border border-zinc-200 shadow-sm" />
+            </Link>
           ) : (
-            <Link to="/signup" className="block border-1 border-white text-white font-semibold px-4 py-1 rounded hover:bg-gray-800 transition">Sign Up</Link>
+            <Link to="/signup" className="bg-zinc-950 text-white hover:bg-zinc-800 text-sm font-medium px-4 py-1.5 rounded-lg transition-colors shadow-sm">Sign Up</Link>
           )}
         </nav>
 
         {/* Mobile Hamburger */}
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
+        <div className="md:hidden flex items-center">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-zinc-600 hover:text-zinc-900 focus:outline-none">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -59,16 +66,23 @@ function Header() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <nav className="md:hidden bg-blue-600 text-white px-6 pb-4 space-y-2">
-          <Link to="/" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Home</Link>
-          <Link to="/about" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">About us</Link>
-          <Link to="/agents" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Agents</Link>
-          <Link to="/analytics" className="block px-3 py-1 rounded transition text-white/70 duration-300 hover:text-purple-400">Analytics</Link>
+        <nav className="md:hidden border-t border-zinc-200 mt-3 pt-3 flex flex-col space-y-3">
+          <Link to="/" onClick={() => setIsOpen(false)} className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Home</Link>
+          <Link to="/about" onClick={() => setIsOpen(false)} className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">About Us</Link>
+          <Link to="/agents" onClick={() => setIsOpen(false)} className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Virtual Team</Link>
+          <Link to="/analytics" onClick={() => setIsOpen(false)} className="text-sm font-medium text-zinc-600 hover:text-zinc-950 transition-colors">Analytics</Link>
+          
+          <div className="h-px w-full bg-zinc-200" />
+
           {user ? (
-            <Link to="/dashboard"><img src={user.picture} alt="user profile" className='h-10 rounded-full' /></Link>
+            <Link to="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+              <img src={user.picture} alt="user profile" className="h-8 w-8 rounded-full border border-zinc-200 shadow-sm" />
+              <span className="text-sm font-medium text-zinc-900">Dashboard</span>
+            </Link>
           ) : (
-            <Link to="/signup" className="block bg-white text-blue-600 font-semibold px-4 py-1 rounded hover:bg-gray-200 transition">Sign Up</Link>
-          )}        </nav>
+            <Link to="/signup" onClick={() => setIsOpen(false)} className="bg-zinc-950 text-white text-center hover:bg-zinc-800 text-sm font-medium px-4 py-1.5 rounded-lg transition-colors shadow-sm">Sign Up</Link>
+          )}
+        </nav>
       )}
     </header>
   );
