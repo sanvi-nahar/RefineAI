@@ -23,16 +23,6 @@ import cors from "cors";
 import User from './models/userModel.js';
 import mongoose from 'mongoose';
 
-import fs from 'fs';
-import path from 'path';
-
-const __dirname = path.resolve(); // get current directory
-const filePath = path.join(__dirname, 'mockdata.json');
-
-const rawData = fs.readFileSync(filePath, 'utf-8');
-const mockdata = JSON.parse(rawData);
-
-
 const app = express();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -125,7 +115,8 @@ app.get("/auth/google", async (req, res, next) => {
             }
             req.login(user, (err) => {
                 if (err) return next(err);
-                return res.redirect("http://localhost:5173/dashboard");
+                const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+                return res.redirect(`${frontendUrl}/dashboard`);
             });
         } catch (err) {
             return next(err);
@@ -572,4 +563,5 @@ app.post("/refine", async (req, res) => {
     }
 });
 
-app.listen(3000, () => console.log(`🚀 API running at http://localhost:${process.env.PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 API running on port ${PORT}`));

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ProjectDetails from '../components/ProjectDetails.jsx';
 import { useParams } from "react-router-dom";
-import RefinedOutput from '../components/RefinedOutput.jsx';
 import ProjectPage from '../components/ProjectDetails.jsx';
 
 

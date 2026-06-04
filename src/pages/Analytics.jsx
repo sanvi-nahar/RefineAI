@@ -13,7 +13,7 @@ import {
     ArcElement,
 } from "chart.js";
 import { Bar, Line, Doughnut, Pie } from "react-chartjs-2";
-import { ChevronLeft, BarChart3, Info, Calendar, Cpu, Layers } from "lucide-react";
+import { ChevronLeft, Info, Calendar, Cpu, Layers } from "lucide-react";
 
 // Register Chart.js components
 ChartJS.register(
@@ -38,20 +38,15 @@ export default function Analytics() {
         ? data.transcript[data.transcript.length - 1].agentNotes.map(a => a.agent)
         : ["Project Manager", "Product Designer", "Engineering Lead", "Market Analyst"];
 
-    // Dynamic scores calculation based on consensus approval & checklist items
-    const scores = isDynamic
+    // Dynamic risks count per agent
+    const risksCount = isDynamic
         ? agents.map(agentName => {
-              const agentNote = data.transcript[data.transcript.length - 1].agentNotes.find(n => n.agent === agentName);
-              const suggestionsCount = agentNote?.suggestions?.length || 0;
-              const risksCount = agentNote?.risks?.length || 0;
-              const consensusStatus = data.final?.consensusMap?.[agentName] || "approved";
-
-              let score = consensusStatus === "approved" ? 90 : 75;
-              score += Math.min(suggestionsCount * 2, 6); // Add up to 6 points for suggestions
-              score += Math.min(risksCount * 2, 4);       // Add up to 4 points for risks
-              return Math.min(score, 100);
+              return data.transcript.reduce((sum, round) => {
+                  const note = round.agentNotes.find(n => n.agent === agentName);
+                  return sum + (note?.risks?.length || 0);
+              }, 0);
           })
-        : [92, 85, 95, 78];
+        : [3, 5, 2, 4];
 
     // Dynamic suggestions count
     const suggestions = isDynamic
@@ -68,7 +63,7 @@ export default function Analytics() {
         ? agents.map(agentName => {
               return data.transcript.filter(round => {
                   const note = round.agentNotes.find(n => n.agent === agentName);
-                  return note && (note.suggestions?.length > 0 || note.feedback?.length > 10);
+                  return note && ((note.suggestions?.length || 0) > 0 || (note.feedback?.length || 0) > 10);
               }).length;
           })
         : [3, 3, 3, 3];
@@ -87,24 +82,23 @@ export default function Analytics() {
           })()
         : [30, 25, 25, 20];
 
-    // Estimated working analysis time
-    const workingTime = isDynamic
+    // Dynamic feedback volume in characters
+    const feedbackVolume = isDynamic
         ? agents.map(agentName => {
-              const totalChars = data.transcript.reduce((sum, round) => {
+              return data.transcript.reduce((sum, round) => {
                   const note = round.agentNotes.find(n => n.agent === agentName);
                   return sum + (note?.feedback?.length || 0);
               }, 0);
-              return Math.max(Math.round(totalChars / 40), 10); // Minimum 10 mins
           })
-        : [45, 40, 55, 30];
+        : [1800, 1500, 2200, 1200];
 
     // Premium SaaS color palette: Zinc, blue, purple, emerald
     const colors = ["#18181b", "#2563eb", "#8b5cf6", "#10b981"];
 
     // Chart Data Configs
-    const scoresData = {
+    const risksData = {
         labels: agents,
-        datasets: [{ label: "Capability Score", data: scores, backgroundColor: colors, borderRadius: 6 }],
+        datasets: [{ label: "Risks Identified", data: risksCount, backgroundColor: colors, borderRadius: 6 }],
     };
 
     const suggestionsData = {
@@ -135,9 +129,9 @@ export default function Analytics() {
         datasets: [{ data: contributions, backgroundColor: colors }],
     };
 
-    const workingTimeData = {
+    const feedbackVolumeData = {
         labels: agents,
-        datasets: [{ label: "Minutes of Debate", data: workingTime, backgroundColor: colors, borderRadius: 4 }],
+        datasets: [{ label: "Feedback Volume (Characters)", data: feedbackVolume, backgroundColor: colors, borderRadius: 4 }],
     };
 
     // Chart Options configured for Zinc/Light Theme labels
@@ -237,13 +231,13 @@ export default function Analytics() {
                 {/* Audit Grid */}
                 <div className="grid lg:grid-cols-2 gap-8 max-w-7xl">
                     
-                    {/* Scores of Agents */}
+                    {/* Risks Identified */}
                     <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
                         <h2 className="text-sm font-semibold text-zinc-900 mb-1 flex items-center gap-1.5">
-                            Capability Score of Agents
+                            Risks Identified by Specialists
                         </h2>
-                        <p className="text-xs text-zinc-400 mb-6">Synthetic score based on consensus status & checklist contributions</p>
-                        <Bar data={scoresData} options={{ ...chartOptions, plugins: { legend: { display: false } } }} />
+                        <p className="text-xs text-zinc-400 mb-6">Actual number of structural risks and concerns raised by each specialist</p>
+                        <Bar data={risksData} options={{ ...chartOptions, plugins: { legend: { display: false } } }} />
                     </div>
 
                     {/* Suggestions progression */}
@@ -277,14 +271,14 @@ export default function Analytics() {
                         </div>
                     </div>
 
-                    {/* Working Time */}
+                    {/* Feedback Volume */}
                     <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-[0_1px_2px_rgba(0,0,0,0.05)] lg:col-span-2">
                         <h2 className="text-sm font-semibold text-zinc-900 mb-1">
-                            Ecosystem Analysis Effort
+                            Analysis Feedback Volume (Characters)
                         </h2>
-                        <p className="text-xs text-zinc-400 mb-6">Estimated analysis time in minutes based on total documentation parsed</p>
+                        <p className="text-xs text-zinc-400 mb-6">Total character count of detailed feedback and notes written by each specialist</p>
                         <Bar
-                            data={workingTimeData}
+                            data={feedbackVolumeData}
                             options={{
                                 ...chartOptions,
                                 indexAxis: "y",

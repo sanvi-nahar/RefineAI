@@ -8,7 +8,8 @@ function Header() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/current_user", { credentials: "include" })
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    fetch(`${apiBase}/api/current_user`, { credentials: "include" })
       .then(res => res.json())
       .then(data => { setUser(data.user) });
   }, []);
