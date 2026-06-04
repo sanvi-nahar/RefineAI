@@ -3,23 +3,24 @@ import { formatReadableDate } from '../utils/formatTime';
 import { Folder, Plus, LogOut, Trash2, Eye, LayoutDashboard, UserCheck, Briefcase } from 'lucide-react';
 
 function Dashboard() {
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000";
     const [projects, setProjects] = useState([]);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/current_user", { credentials: "include" })
+        fetch(`${apiBase}/api/current_user`, { credentials: "include" })
             .then(res => res.json())
             .then(data => { setUser(data.user) });
-    }, []);
+    }, [apiBase]);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/user_projects", { credentials: "include" })
+        fetch(`${apiBase}/api/user_projects`, { credentials: "include" })
             .then(res => res.json())
             .then(data => { setProjects(data) });
-    }, []);
+    }, [apiBase]);
 
     const handleLogout = async () => {
-        window.location.href = "http://localhost:3000/logout"
+        window.location.href = `${apiBase}/logout`;
     }
 
     const handleDelete = async (projectId) => {
@@ -28,7 +29,7 @@ function Dashboard() {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/delete_project/${projectId}`, {
+            const response = await fetch(`${apiBase}/api/delete_project/${projectId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"

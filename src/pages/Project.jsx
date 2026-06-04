@@ -16,14 +16,15 @@ function Project() {
   const [data, setData] = useState();
 
   useEffect(() => {
-    const url = `http://localhost:3000/api/get_project/${id}`;
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const url = `${apiBase}/api/get_project/${id}`;
     fetch(url)
       .then((res) => res.json())
       .then((dat) => {
         // console.log("data from back ", dat);
         setData(dat);
       })
-  }, []);
+  }, [id]);
 
   // console.log(data)
 

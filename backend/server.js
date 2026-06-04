@@ -38,9 +38,10 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 // cors setup
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 app.use(
     cors({
-        origin: "http://localhost:5173",   // frontend URL
+        origin: frontendUrl,               // frontend URL
         credentials: true,                 // allow cookies/session
         methods: ["GET", "POST", "PUT", "DELETE"],
     })
@@ -71,12 +72,14 @@ passport.deserializeUser((user, done) => {
 });
 
 // Google OAuth Strategy (using dummy fallbacks if environment variables are missing to avoid startup crash)
+const googleCallback = process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL || "http://localhost:3000"}/auth/google/callback`;
+
 passport.use(
     new GoogleStrategy(
         {
             clientID: process.env.GOOGLE_CLIENT_ID || "dummy-client-id",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "dummy-client-secret",
-            callbackURL: "http://localhost:3000/auth/google/callback",
+            callbackURL: googleCallback,
         },
         async (accessToken, refreshToken, profile, done) => {
             // saves user to data base
@@ -107,15 +110,37 @@ app.get("/", (req, res) => {
     return res.json({ message: `Hello from backend server running on port : ${process.env.PORT}`, current_user: req.user })
 })
 
-app.get("/auth/google",
-    passport.authenticate("google", { scope: ["profile", "email"] })
-);
+app.get("/auth/google", async (req, res, next) => {
+    const clientId = process.env.GOOGLE_CLIENT_ID || "dummy-client-id";
+    if (clientId.startsWith("dummy")) {
+        try {
+            // Find or create the Developer Guest user in MongoDB
+            let user = await User.findOne({ googleId: "dummy-developer-guest-id" });
+            if (!user) {
+                user = await User.create({
+                    googleId: "dummy-developer-guest-id",
+                    name: "Developer Guest",
+                    picture: "https://lh3.googleusercontent.com/a/default-user=s96-c",
+                });
+            }
+            req.login(user, (err) => {
+                if (err) return next(err);
+                return res.redirect("http://localhost:5173/dashboard");
+            });
+        } catch (err) {
+            return next(err);
+        }
+    } else {
+        passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    }
+});
 
 app.get("/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
         // Redirect frontend with user session
-        res.redirect("http://localhost:5173/dashboard");
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+        res.redirect(`${frontendUrl}/dashboard`);
     }
 );
 
@@ -130,7 +155,8 @@ app.get("/api/current_user", (req, res) => {
 
 app.get("/logout", (req, res) => {
     req.logout(() => {
-        res.redirect("http://localhost:5173/");
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173/";
+        res.redirect(frontendUrl);
     });
 });
 
