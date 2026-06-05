@@ -24,6 +24,7 @@ import User from './models/userModel.js';
 import mongoose from 'mongoose';
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,11 +44,16 @@ app.use(express.json());
 await connectToDb(process.env.MONGO_DB_URL);
 
 // Setup session middleware
+const isProduction = process.env.NODE_ENV === "production";
 app.use(
     session({
-        secret: "your-secret-key",
+        secret: process.env.SESSION_SECRET || "your-secret-key",
         resave: false,
         saveUninitialized: true,
+        cookie: {
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax"
+        }
     })
 );
 app.use(passport.initialize());
