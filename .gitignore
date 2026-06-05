@@ -27,3 +27,5 @@ dist-ssr
 .env
 .env*.local
 
+# Local project analysis
+project_analysis.md
